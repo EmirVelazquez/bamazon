@@ -1,0 +1,23 @@
+{
+  "name": "bamazon",
+  "version": "1.0.0",
+  "description": "Bamazon application that uses mysql and inquirer",
+  "main": "bamazonCustomer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EmirVelazquez/bamazon.git"
+  },
+  "author": "Emir Velazquez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EmirVelazquez/bamazon/issues"
+  },
+  "homepage": "https://github.com/EmirVelazquez/bamazon#readme",
+  "dependencies": {
+    "inquirer": "^7.0.0",
+    "mysql": "^2.17.1"
+  }
+}
