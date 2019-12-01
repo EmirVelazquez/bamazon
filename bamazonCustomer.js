@@ -2,6 +2,7 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
 
+
 //Create the connection information for the sql database
 var connection = mysql.createConnection({
     host: "localhost",
@@ -13,14 +14,14 @@ var connection = mysql.createConnection({
     user: "root",
 
     // Your password
-    password: "pekybruno",
+    password: "",
     database: "bamazon_DB"
 });
 
 // Connect to mysql server and sql database
 connection.connect(function (err) {
     if (err) throw err;
-    console.log("Welcome shopper, These are the current products available for sale!");
+    console.log("Welcome, these are the current products available for sale!");
     //Runs the display all products for same function
     displayAll();
 });
@@ -33,8 +34,6 @@ function displayAll() {
         if (err) throw err;
         let productArr = [];
         for (var i = 0; i < results.length; i++) {
-            // console.log("===================================================================================================");
-            // console.log("Product ID: " + Number(results[i].item_id), "| " + results[i].product_name, "| Price: " + Number(results[i].price));
             productArr.push(new Product(results[i].item_id, results[i].product_name, results[i].price));
         }
         console.table(productArr);
@@ -79,15 +78,49 @@ function whichProduct() {
                     chosenProduct = results[i];
                 }
             }
-            console.log(chosenProduct.stock_quantity);
-            console.log(chosenProduct.stock_quantity - answer.quantityProduct);
             // Determine if there are still enough products in stock
             if (chosenProduct.stock_quantity > parseInt(answer.quantityProduct)) {
-                console.log("Enough products in stock for purchase!");
+                connection.query("UPDATE products SET ? WHERE ?",
+                    [
+                        {
+                            stock_quantity: chosenProduct.stock_quantity - answer.quantityProduct
+                        },
+                        {
+                            item_id: chosenProduct.item_id
+                        }
+                    ],
+                    function (error) {
+                        if (error) throw error;
+                        console.log("Successful Purchase!");
+                        console.log("Your Total Due Was: " + parseFloat(answer.quantityProduct) * parseFloat(chosenProduct.price));
+                        buyMore();
+                    }
+                );
             }
             else {
                 console.log("Not enough product stock to fulfill your request, sorry!");
+                buyMore();
             }
         });
+    });
+}
+
+// Function to shop again
+function buyMore() {
+    inquirer.prompt([
+        {
+            name: "buyAgain",
+            type: "confirm",
+            message: "Would you like to buy another product?"
+        }
+    ]).then(function (answer) {
+        if (answer.buyAgain) {
+            console.log("What else may we help you with?")
+            displayAll();
+        }
+        else {
+            console.log("Thank you for giving us your business, have a great day!")
+            connection.end();
+        }
     });
 }
