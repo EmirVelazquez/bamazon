@@ -19,8 +19,6 @@ Bamazon is a command line Node.js and MySQL App that let's the user purchase pro
 2. Code to establish connection with MySQL database (Has to input a password for MySQL).
 3. Code with functions that execute depending on what the user selects to do.
 
-![](gifs/bamazonJs.gif)
-
 ### How To Run App
 
 1. App has to be run on the command terminal
